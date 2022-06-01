@@ -1,8 +1,0 @@
-- Adjust surge RANGE!
-- change SNR to 4 text.
-- check text on calibration and hindacst
-- and explenatory text in the main file
-- Update tabel
-- Run experimetns with powers
-- change output time in code
-- code 07 check witch powers are called
