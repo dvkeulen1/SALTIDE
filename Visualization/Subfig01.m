@@ -1,7 +1,7 @@
 %% subfig 01
 clear all; close all; clc;
 
-sub_dir   = 'c:\Users\Daan\Documents\PhD - SALTI\02_Paper_1\01_Data\04_Scripts\SALTIDE\Update_march_2020\';
+sub_dir   = '..';
 save_dir  = [sub_dir 'Data_and_experiments\Figures\'];
 PRINT     = 1;
 %% Diminsonless parameters

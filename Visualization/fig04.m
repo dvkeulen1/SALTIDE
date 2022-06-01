@@ -1,7 +1,7 @@
 %% fig 04
 clear all; close all; clc;
 
-sub_dir   = 'c:\Users\Daan\Documents\PhD - SALTI\02_Paper_1\01_Data\04_Scripts\SALTIDE\Update_march_2020\';
+sub_dir   = '..';
 Struc_dir = [sub_dir '\Data_and_experiments\Data\'];
 save_dir  = [sub_dir 'Data_and_experiments\Figures\'];
 load([Struc_dir 'data_ems_river.mat']);
@@ -46,10 +46,10 @@ init_fig(19,7,8)
 xLims           = [datenum('2017-10-29') datenum('2018-03-01')];
 
 ax(1) = subplot(1,3,[1 2]); hold(ax(1),'on'); box(ax(1),'on'); 
-plot(ax(1),time,S0F./max(S0F) ,'r','LineWidth',1,'LineStyle','-','DisplayName','$\Delta S /max\left(\Delta S \right)$') 
-plot(ax(1),time,wlvF./max(wlvF),'k','LineWidth',1,'DisplayName','$\Delta\zeta /max\left(\Delta\zeta \right)$')
-plot(ax(1),time,QrF./max(QrF),'b','LineWidth',1,'DisplayName','$\Delta Q /max\left(\Delta Q \right)$') 
-xlim(ax(1),xLims ); ylim(ax(1),[-1.5 2]); 
+plot(ax(1),time,S0F./max(S0F) ,'r','LineWidth',1,'LineStyle','-','DisplayName','$\tilde{S} /max\left(\tilde{S} \right)$') 
+plot(ax(1),time,wlvF./max(wlvF),'k','LineWidth',1,'DisplayName','$\tilde{\zeta} /max\left(\tilde{\zeta} \right)$')
+plot(ax(1),time,QrF./max(QrF),'b','LineWidth',1,'DisplayName','$\tilde{Q} /max\left(\tilde{Q} \right)$') 
+xlim(ax(1),xLims ); ylim(ax(1),[-1.5 3]); 
 ylb = ylabel(ax(1),'(-)'); set(ylb ,'Interpreter','latex')
 set(ax(1),'Xtick',xLims (1):365/12:xLims (end),'XTickLabelRotation',45, 'XTickLabel', {});
 lgd = legend(ax(1),'Location', 'NorthEast','Orientation','Vertical'); set(lgd,'Interpreter','latex')
@@ -61,9 +61,11 @@ set(ax(1),'Xtick',xLims (1):365/12:xLims (end),'XTickLabelRotation',45);
 ax_dx       = 0.0; ax_dy       = 0.1;  ax_dxt      = 0.0; ax_dyt      = 0.05;
 PosAx1 = get(ax(1),'Position'); PosAx_ad_1 = PosAx1+[ax_dx ax_dy -ax_dx -ax_dy-ax_dyt];
 set(ax(1),'Position',PosAx_ad_1);
+
+
 x1 = PosAx_ad_1(1)+ PosAx_ad_1(3);
 y1 = PosAx_ad_1(2)+ PosAx_ad_1(4); 
-dx = x1/3; dy = y1/4.7; 
+dx = x1/3.5; dy = y1/3; 
 lgd.Position = [x1-dx y1-dy dx dy];
 
 
@@ -74,9 +76,9 @@ set(s,'MarkerFaceAlpha',0.5);
 colormap(ax(2),(bluewhitered(15))); caxis(ax(2),[Qtlclb(1) Qtlclb(end)]);
 clb = colorbar;   clb.Label.String = 'PSU'; clb.FontName = 'Times new roman'; 
 xlim([-1.1 1.1]); ylim([-4 4]);
-xlb = xlabel(ax(2),'$\Delta\zeta$ (m)');  
+xlb = xlabel(ax(2),'$\tilde{\zeta}$ (m)');  
 %ylb = ylabel(ax(2),'$\Delta$S  $\left(\frac{dS}{dx}\right)^{-1}$ (km)')%ylabel({'Surge excursion [km]', 'PSU/(dPSU/dx)'})
-ylb = ylabel(ax(2),'$\Delta S \left(\frac{dS}{dx}\right)^{-1}  (km)$')%ylabel({'Surge excursion [km]', 'PSU/(dPSU/dx)'})
+ylb = ylabel(ax(2),'$\tilde{S} \left(\frac{dS}{dx}\right)^{-1}  (km)$')%ylabel({'Surge excursion [km]', 'PSU/(dPSU/dx)'})
 
 xvalNonNan      = wlvF(~isnan(wlvF) & ~isnan(S0nrm_km)); 
 yvalNonNan      = S0nrm_km(~isnan(wlvF) & ~isnan(S0nrm_km )); 

@@ -1,11 +1,11 @@
 %% fig 07
 clear all; close all; clc;
 %%  Load the model output
-sub_dir   = 'c:\Users\Daan\Documents\PhD - SALTI\02_Paper_1\01_Data\04_Scripts\SALTIDE\Update_march_2020\';
+sub_dir   = '..';
 struc_dir = [sub_dir '\Data_and_experiments\Experiments\'];
 save_dir  = [sub_dir 'Data_and_experiments\Figures\'];
 
-PRINT = 0
+PRINT = 1
 %%
 Struc_dir2 = [sub_dir '\Data_and_experiments\Data\'];
 load([Struc_dir2 'data_ems_river.mat']);

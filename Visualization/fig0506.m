@@ -1,7 +1,7 @@
 %% fig 05 and 06
 clear all; close all; clc;
 
-sub_dir   = 'c:\Users\Daan\Documents\PhD - SALTI\02_Paper_1\01_Data\04_Scripts\SALTIDE\Update_march_2020\';
+sub_dir   = '..';
 Struc_dir = [sub_dir '\Data_and_experiments\Experiments\'];
 save_dir  = [sub_dir 'Data_and_experiments\Figures\'];
 PRINT     = 1;

@@ -2,7 +2,7 @@
 clear all; close all; clc;
 %%  Load the model output
 modelname = 'eq10_pred';
-sub_dir   = 'c:\Users\Daan\Documents\PhD - SALTI\02_Paper_1\01_Data\04_Scripts\SALTIDE\Update_march_2020\';
+sub_dir   = '..';
 struc_dir = [sub_dir '\Data_and_experiments\Experiments\'];
 save_dir  = [sub_dir 'Data_and_experiments\Figures\'];
 load([struc_dir 'eq10_pred.mat']);

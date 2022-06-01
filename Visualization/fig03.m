@@ -1,13 +1,13 @@
 %% fig 03
 clc; clear all; 
 %
-sub_dir   = 'c:\Users\Daan\Documents\PhD - SALTI\02_Paper_1\01_Data\04_Scripts\SALTIDE\Update_march_2020\';
+sub_dir   = '..';
 Struc_dir = [sub_dir '\Data_and_experiments\Data\'];
 save_dir  = [sub_dir 'Data_and_experiments\Figures\'];
 load([Struc_dir 'data_ems_river.mat']);
 
 %%
-PRINT = 1;
+PRINT = 0;
 nr_sp =  7;
 sp_lb = char(97:122);
 dis   = [39,48.7,54.5,58.2,65.3]; % distance t.o.v. barrier island 

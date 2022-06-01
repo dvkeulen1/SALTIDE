@@ -1,9 +1,9 @@
 %% fig 01
 clear all; close all; clc;
 
-sub_dir   = 'c:\Users\Daan\Documents\PhD - SALTI\02_Paper_1\01_Data\04_Scripts\SALTIDE\Update_march_2020\';
+sub_dir   = '..';
 save_dir  = [sub_dir 'Data_and_experiments\Figures\'];
-PRINT     = 0; 
+PRINT     = 1; 
 %% Mixed wave solution 
 % Dimensionless numbers 
 X    = [1:150];
@@ -58,7 +58,7 @@ clb  = colorbar(ax(1)); clb.Label.String ='\epsilon (rad)'; clb.Location     = '
 caxis([0 0.5*pi]);colormap(bluewhitered);
 plot(ax(1),X,ycFX,'r','LineWidth',2,'DisplayName','Critical convergence \gamma_c')
 text(ax(1),0.4,0.1,'mixed wave', 'Units', 'Normalized')
-text(ax(1),0.4,0.6,'standing wave', 'Units', 'Normalized')
+text(ax(1),0.4,0.6,'standing wave', 'Units', 'Normalized','Color','w')
 text(ax(1),0.05,0.9,'(a)', 'Units', 'Normalized')
 xlim(ax(1),[0 150]); ylim(ax(1),[0 10]);
 xlabel(ax(1),'X (-)'); ylabel(ax(1),'$\gamma$ (-)')
@@ -69,7 +69,7 @@ pclr = pcolor(ax(4),Xm,ym,dc); pclr.HandleVisibility = 'off'; pclr.EdgeColor = '
 clb = colorbar(ax(4)); clb.Label.String ='\delta (-)';clb.Location  = 'eastoutside';
 caxis(ax(4),[-2 2]); colormap(bluewhitered);
 plot(ax(4),X,ycFX,'r','LineWidth',2,'DisplayName','Critical convergence \gamma_c')
-text(ax(4),0.4,0.1,  'mixed wave', 'Units', 'Normalized')
+text(ax(4),0.4,0.1,  'mixed wave', 'Units', 'Normalized','Color','w')
 text(ax(4),0.4,0.6,   'standing wave', 'Units', 'Normalized')
 text(ax(4),0.05,0.9,  '(b)', 'Units', 'Normalized')
 xlim(ax(4),[0 150]); ylim(ax(4),[0 10]);
@@ -77,7 +77,7 @@ xlabel(ax(4),'X (-)')
 ylabel(ax(4),'$\gamma$ (-)')
 
 Colors = linspecer(size(d,1));
-ax =  subplot(2,2,2); hold(ax,'on') ; box(ax,'on'); grid(ax,'on');
+ax =  subplot(2,2,4); hold(ax,'on') ; box(ax,'on'); grid(ax,'on');
 set( ax, 'XScale' , 'log')
 for ii = 1:size(d,1)
     if ii == 1
@@ -92,7 +92,7 @@ text(ax,0.05,0.9,  '(c)', 'Units', 'Normalized')
 xlabel(ax,'T (d)'); ylabel(ax,'$\epsilon$ (rad), $\delta$ (-)')
 legend(ax,'Location','NorthEast')
 
-ax =  subplot(2,2,4); hold(ax,'on'); box(ax,'on'); grid(ax,'on');
+ax =  subplot(2,2,2); hold(ax,'on'); box(ax,'on'); grid(ax,'on');
 set( ax, 'XScale' , 'log')
 for ii = 1:size(d,1)
 semilogx(ax,T,E_surge(ii,:)./1000,'LineStyle','-','Color',Colors(ii,:),'LineWidth',1.5,'DisplayName', ['\eta = ' num2str(surge_lv(ii),2)])
