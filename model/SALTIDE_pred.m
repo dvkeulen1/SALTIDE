@@ -28,10 +28,27 @@ x           = Optdata.fmin_ha.Pars.x;
 % step 1: gpt for harmonic model    
 DxD0        = SALTIDE_Sx2Dx(Sx,Sr,S0,gpt,x(2)); % 
 tc_fn       = tc(x,time,freq,gpt);
+
+% remove non-sigificant component surge-model
+if      strcmp(Optdata.model,'Q')
+    nr_st = 1;
+    nr_fr = length(freq);
+    lgd     = true(1,size(tc_fn,2));
+elseif  strcmp(Optdata.model,'QH')
+    nr_st = 2;
+    nr_fr = length(freq);
+    ckc   = ismember(Optdata.sigcon.freqs_sig,Optdata.sigcon.freqs_sigBk);
+    lgd   = true(1,size(tc_fn,2));
+    lgd(nr_st+nr_fr*2+1:end) = [ckc', ckc']; 
+    nr_frs= sum(ckc); 
+end
+
+tc_fn       =  tc_fn(:,lgd);
 [cfs,STATS] = robustfit(tc_fn,DxD0(gpt),[],[],'off');
 
 % step 2: gpv for the predictions
 tc_fn           = tc(x,time,freq,gpv);
+tc_fn           = tc_fn(:,lgd);
 DxD0_pred(gpv)  = tc_fn*cfs;
 DxD0_pred       = SALTIDE_Trunck(DxD0_pred);
 Sx_pred(gpv)    = ((DxD0_pred(gpv)+1).^(1/x(2))).*(S0(gpv)-Sr(gpv))+Sr(gpv);
@@ -76,13 +93,11 @@ QrD0hs           = NaN (size(Sx));
 D0(gpv)        = (x(2)./D0f(x,Qr,dRho,n0,gpv));  
 QrD0(gpv)      = (x(2).*Qr(gpv)./D0f(x,Qr,dRho,n0,gpv));
 QrD0hs(gpv)    = (x(2).*Qr(gpv)./D0f(x,Qr,dRho,n0,gpv)).*hs(gpv); 
-
-nr_fr     = length(freq);        
+ 
 amp       = NaN ([length(Sx),nr_fr ]); 
 phase     = NaN ([length(Sx),nr_fr ]); 
 
 if strcmp(Optdata.model,'Q') % Discharge model      
-        nr_st = 1;
         cst_stage_QD0(gpv)    = tc_fn(:,1)*cfs(1); 
         cst_tide_QD0(gpv)     = tc_fn(:,nr_st+1:end)*cfs(nr_st+1:end);  
         
@@ -99,21 +114,23 @@ if strcmp(Optdata.model,'Q') % Discharge model
         phase(gpv,:)     = angle(amin)*180/pi;         %
          
 elseif  strcmp(Optdata.model,'QH') % Stage model
-        nr_st = 2;
-           
         cst_stage_QD0(gpv)    = tc_fn(:,1)*cfs(1); 
         cst_surge_QD0(gpv)    = tc_fn(:,2)*cfs(2); 
         cst_tide_QD0(gpv)     = tc_fn(:,nr_st+1:end)*cfs(nr_st+1:end); 
     
         dc2  =  cfs(nr_st+1:nr_st+nr_fr);             % cosine parts
         ds2  =  cfs(nr_st+nr_fr+1:nr_st+nr_fr*2);     % sine parts
-        dc3  =  cfs(nr_st+nr_fr*2+1:nr_st+nr_fr*3);   % cosine parts
-        ds3  =  cfs(nr_st+nr_fr*3+1:nr_st+nr_fr*4);   % sine parts
+        
+        dc3  =  cfs(nr_st+nr_fr*2+1:nr_st+nr_fr*2+nr_frs);   % cosine parts
+        ds3  =  cfs(nr_st+nr_fr*2+nr_frs+1:nr_st+nr_fr*2+nr_frs*2);   % sine parts
 
-        Ak   =  sqrt(dc2.^2 + ds2.^2)' .*QrD0(gpv);   % nubo x cases
-        Bk   =  sqrt(dc3.^2 + ds3.^2)' .*QrD0hs(gpv); % nubo x cases
-        ak   =  (atan2(ds2,dc2))';                                   % 1 x cases
-        bk   =  (atan2(ds3,dc3))';                                   % 1 x cases
+        % Bk and bk contain dummy colomns
+        Ak          =  sqrt(dc2.^2 + ds2.^2)' .*QrD0(gpv);   % nubo x cases
+        Bk          =  zeros(size(Ak));
+        Bk(:,ckc)   =  sqrt(dc3.^2 + ds3.^2)' .*QrD0hs(gpv); % nubo x cases  
+        ak          =  (atan2(ds2,dc2))';                                   % 1 x cases
+        bk          =  zeros(size(ak));
+        bk(:,ckc)   =  (atan2(ds3,dc3))';                                   % 1 x cases
 
         aplus   = ((Ak.*cos(ak)+Bk.*cos(bk)) - 1i*((Ak.*sin(ak)+Bk.*sin(bk))))/2;            % plus     (dc - 1i ds)
         amin    = ((Ak.*cos(ak)+Bk.*cos(bk)) + 1i*((Ak.*sin(ak)+Bk.*sin(bk))))/2;            % amp min  (dc - 1i ds)        
@@ -174,8 +191,13 @@ Optdata.pred.stats            = STATS;
 Optdata.pred.amp              = amp;
 Optdata.pred.phase            = phase; 
 Optdata.pred.freq             = freq; 
-Optdata.pred.namefreq         = Optdata.sigcon.nameSig'; 
-    
+Optdata.pred.namefreq         = Optdata.sigcon.nameSig';
+
+if  strcmp(Optdata.model,'QH')
+    Optdata.pred.namefreqAK       = Optdata.sigcon.nameSigAk;
+    Optdata.pred.namefreqBK       = Optdata.sigcon.nameSig(ckc,:);
+end 
+Optdata.pred.lgd              = lgd;     
 Optdata.pred.lsqfit     = lsqfit;
 Optdata.pred.lsqfit_cal = lsqfit_cal;
 Optdata.pred.lsqfit_val = lsqfit_val;

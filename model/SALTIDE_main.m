@@ -37,8 +37,8 @@ default_sfrq    = 24;           % sample per day
 default_dsigma  = 0.15;         % parameter n from NS-tide
 default_Vtime   = NaN;          % Validate time
 
-% signif. testing
-default_cases   = 100; 
+% signif. testing (100 is minimun to use simga as SE)
+default_cases   = 200; 
 
 
 % calibration parameters For P and K
@@ -98,8 +98,8 @@ Optdata.surgelevels.Twin = Parser.Results.Twin;
 
 %%
 
-[ids, ~]  = find(~isnan(Sx), 1, 'first'); % first salinity observation
-[ide, ~]  = find(~isnan(Sx), 1, 'last');  % last salinity observation
+[ids,~]  = find(~isnan(Sx), 1, 'first'); % first salinity observation
+[ide,~]  = find(~isnan(Sx), 1, 'last');  % last salinity observation
 
 time    = time(ids:ide); Sx      = Sx(ids:ide);  Sr      = Sr(ids:ide); 
 S0      = S0(ids:ide);  Qr      = Qr(ids:ide); h0      = h0(ids:ide); 

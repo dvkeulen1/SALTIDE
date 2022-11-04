@@ -7,7 +7,9 @@ dt     = Optdata.prop.dt;
 % select consituents within time window (twin)
 % all freq higher then MF (seasonal);
 % all freq low than MNO5 
-twin = [0.74 5.7578]; %[MF MNO5] 
+twin = [0.74  5.0454]; %[MF MNO5] 
+
+%twin = [0.74 2.1039]; %[MF     2SN2] 
 
 % HA for h0 (water levels at the mouth)  
 signal          = signal-nanmean(signal); 

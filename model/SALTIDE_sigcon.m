@@ -79,25 +79,61 @@ for ii = 1:nr_fr
     phase     = angle(amin).*(180/pi);      % A14... % conversion from rad to deg (180/pi) 
     phase     = SALTIDE_cluster(phase, 360); 
     
+    %% significant 
     fmajTS(ii,:) = amp(:,1); 
     phaTS(ii,:)  = phase(:,1); 
     
-    emaj(ii,:)   = median(abs(amp-median(amp,2)),2)/.6745*1.96;
+    
+    % Xtilde  = median(x),   MAD = median(abs(x -Xtilde)) 
+    % sigma   = MAD/k 
+    % k       = .6745
+    
+    emaj(ii,:)   = median(abs(amp-median(amp,2)),2)/.6745*1.96;             
     epha(ii,:)   = median(abs(phase-median(phase,2)),2)/.6745*1.96;
- 
+    
+    % base amplitude and surge amplitude
     srn(ii,:)    = (fmajTS(ii,:) ./emaj(ii,:)).^2; 
     srn_mean(ii) =  nanmean(srn(ii,:)); 
-    sigcon(ii)   =  srn_mean(ii)>4; 
-    
-    freqsSig     = Optdata.fmin_ha.Pars.freq(logical(sigcon)); 
-    nameSig      = Optdata.fmin_ha.Pars.name(logical(sigcon),:)';
+    srnv         =  6;
+    sigcon(ii)   =  srn_mean(ii)>srnv; 
 
+    if strcmp(Optdata.model,'QH')
+        fAk(ii,:)   = Ak(:,1);
+        fBk(ii,:)   = Bk(:,1);
+        eAk(ii,:)   = median(abs(Ak(:,1)-median(Ak,2)),2)/.6745*1.96;
+        eBk(ii,:)   = median(abs(Bk(:,1)-median(Bk,2)),2)/.6745*1.96;
+        srn_Ak(ii,:)    = (Ak(:,1)' ./eAk(ii,:)).^2; 
+        srn_Ak_mean(ii) =  nanmean( srn_Ak(ii,:)); 
+        srn_Bk(ii,:)    = (Bk(:,1)' ./eBk(ii,:)).^2; 
+        srn_Bk_mean(ii) =  nanmean( srn_Bk(ii,:)); 
+        sigcon_Ak(ii)   =  srn_Ak_mean(ii)>srnv; 
+        sigcon_Bk(ii)   =  srn_Bk_mean(ii)>srnv; 
+    end 
+
+    
+end 
+
+freqsSig     = Optdata.fmin_ha.Pars.freq(logical(sigcon)); 
+nameSig      = Optdata.fmin_ha.Pars.name(logical(sigcon),:);
+
+if strcmp(Optdata.model,'QH')
+    freqsSigAk     = Optdata.fmin_ha.Pars.freq(logical(sigcon_Ak)); 
+    freqsSigBk     = Optdata.fmin_ha.Pars.freq(logical(sigcon_Bk)); 
+    nameSigAk    = Optdata.fmin_ha.Pars.name(logical(sigcon_Ak),:);
+    nameSigBk    = Optdata.fmin_ha.Pars.name(logical(sigcon_Bk),:);
 end 
 
 % save data to output 
 Optdata.sigcon.sigcon       = sigcon;   %significance
-Optdata.sigcon.freqs_sig    = freqsSig; 
+Optdata.sigcon.freqs_sig    = freqsSig;
 Optdata.sigcon.nameSig      = nameSig;
+
+if strcmp(Optdata.model,'QH')
+    Optdata.sigcon.nameSigAk    = nameSigAk;
+    Optdata.sigcon.nameSigBk    = nameSigBk;
+    Optdata.sigcon.freqs_sigAk  = freqsSigAk; 
+    Optdata.sigcon.freqs_sigBk  = freqsSigBk; 
+end 
 
 Optdata.sigcon.fmajTS       = fmajTS'; %amplitudes 
 Optdata.sigcon.phaTS        = phaTS';  %resulting phase
